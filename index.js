@@ -193,7 +193,19 @@ instance.prototype.initVariables = function () {
 	self.apiKeyInputPortNumber = ['api', 'input', 'active', 'source', 'port-number']
 	self.apiKeyInputPortType = ['api', 'input', 'active', 'source', 'port-type']
 
+	//Set Shutter at 180 
+	self.apiKeyShutterSyncMode = ['api', 'output', 'network', 'shuttersync', 'mode']
+	self.apiKeybPrioritizeRefresh = ['api', 'output', 'network', 'shuttersync', 'prioritise-refresh-rate']
+	self.apiKeyShutterAngle = ['api', 'output', 'network', 'shuttersync', 'angle-settings', 'shutter-angle']
+	self.apiKeyGenlockSource = ['api', 'output', 'network', 'genlock', 'source']
+	self.apiKeyGenlockSource = ['api', 'output', 'network', 'frame-rate-multiplier']
+
+
 	self.variableInfo = [
+		{
+			definition: { label: 'Set Shutter to 180', name: 'SetShutterTo180' },
+			apiKey: self.apiKeyActivePresetNumber,
+		},
 		{
 			definition: { label: 'Active Preset Number', name: 'activePresetNumber' },
 			apiKey: self.apiKeyActivePresetNumber,
