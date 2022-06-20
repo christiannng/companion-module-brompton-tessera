@@ -198,13 +198,14 @@ instance.prototype.initVariables = function () {
 	self.apiKeybPrioritizeRefresh = ['api', 'output', 'network', 'shuttersync', 'prioritise-refresh-rate']
 	self.apiKeyShutterAngle = ['api', 'output', 'network', 'shuttersync', 'angle-settings', 'shutter-angle']
 	self.apiKeyGenlockSource = ['api', 'output', 'network', 'genlock', 'source']
-	self.apiKeyGenlockSource = ['api', 'output', 'network', 'frame-rate-multiplier']
-
+	self.apiKeyFrameRateMultiplier = ['api', 'output', 'network', 'frame-rate-multiplier']
+	self.apiKeyOffsetFraction = ['api', 'output', 'network', 'genlock', 'phase-offset', 'fraction']
+	self.apiKeyOffsetFractionMode = ['api', 'output', 'network', 'genlock', 'phase-offset', 'mode']
 
 	self.variableInfo = [
 		{
 			definition: { label: 'Set Shutter to 180', name: 'SetShutterTo180' },
-			apiKey: self.apiKeyActivePresetNumber,
+			apiKey: self.apiKeyShutterSyncMode,
 		},
 		{
 			definition: { label: 'Active Preset Number', name: 'activePresetNumber' },
@@ -425,6 +426,39 @@ instance.prototype.initActions = function (system) {
 				},
 			],
 		},
+		setTo48FPS: {
+			label: 'Set to 48 FPS',
+			options: [
+				{
+					type: 'number',
+					label: 'Shutter Angle',
+					id: 'shutterAngle',
+					tooltip: 'Selected Shutter Angle',
+					min: 45,
+					max: 360,
+					default: 172.6,
+					step: .1,
+					required: true,
+					range: false,
+				},
+				{
+					type: 'number',
+					label: 'Fraction Offset',
+					id: 'fractionOffset',
+					tooltip: 'Selected Fraction Offset',
+					min: 0,
+					max: 100,
+					default: 62,
+					step: .1,
+					required: true,
+					range: false,
+				},
+			],
+		},
+		setTo24FPS: {
+			label: 'Set to Normal 24 FPS',
+			options: [],
+		},
 		presetNext: {
 			label: 'Preset Next',
 			options: [],
@@ -615,6 +649,18 @@ instance.prototype.initActions = function (system) {
 			label: 'Test Pattern Format Select',
 			options: [
 				{
+					type: 'number',
+					label: 'Brightness Percentage',
+					id: 'brightnessPercentage',
+					tooltip: 'The brightness of the pattern',
+					min: 0,
+					max: 100,
+					default: 100,
+					step: .1,
+					required: true,
+					range: false,
+				},
+				{
 					type: 'dropdown',
 					label: 'Format',
 					id: 'format',
@@ -712,7 +758,7 @@ function validate(number, min, max, description) {
 		throw new Error(description + ' was not set')
 	}
 
-	if (!Number.isInteger(number)) {
+	if (Number.isNaN(number)) {
 		throw new Error(description + ' is not a whole number')
 	}
 
@@ -721,7 +767,11 @@ function validate(number, min, max, description) {
 	}
 }
 
-instance.prototype.action = function (action) {
+function delay(time) {
+	return new Promise(resolve => setTimeout(resolve, time));
+}
+
+instance.prototype.action = async function (action) {
 	let self = this
 
 	try {
@@ -772,6 +822,7 @@ instance.prototype.action = function (action) {
 			validate(action.options.brightness, minBrightness, maxBrightness, 'Brightness')
 			self.setProcessorProperty(self.apiKeyOutputBrightness, action.options.brightness)
 		}
+
 
 		if (action.action == 'outputBrightnessSetToMax') {
 			self.setProcessorProperty(self.apiKeyOutputBrightness, -1)
@@ -898,7 +949,38 @@ instance.prototype.action = function (action) {
 		}
 
 		if (action.action == 'testPatternFormatSelect') {
+			validate(action.options.brightnessPercentage, minBrightness, maxBrightness, 'Brightness Percentage')
 			self.setProcessorProperty(self.apiKeyTestPatternFormat, action.options.format)
+			self.setProcessorProperty(self.apiKeyOutputBrightness, action.options.brightnessPercentage * self.config.maxBrightness / 100.0)
+		}
+
+		if (action.action == 'setTo48FPS') {
+			validate(action.options.shutterAngle, 45, 360, 'Shutter Angle')
+			validate(action.options.fractionOffset, 0, 100, 'Fraction Offset')
+
+			self.setProcessorProperty(self.apiKeyShutterSyncMode, 'angle')
+
+			await delay(200);
+			let bShutterModeAngle = getProperty(self.state, self.apiKeyShutterSyncMode)
+			if (bShutterModeAngle === "angle") {
+				self.setProcessorProperty(self.apiKeybPrioritizeRefresh, '1')
+				self.setProcessorProperty(self.apiKeyShutterAngle, action.options.shutterAngle)
+				self.setProcessorProperty(self.apiKeyFrameRateMultiplier, '2')
+
+				self.setProcessorProperty(self.apiKeyOffsetFractionMode, 'fraction')
+
+				await delay(200);
+				let bOffsetFractionMode = getProperty(self.state, self.apiKeyOffsetFractionMode)
+				if(bOffsetFractionMode === 'fraction') {
+					self.setProcessorProperty(self.apiKeyOffsetFraction, action.options.fractionOffset)
+				}
+			}
+		}
+
+		if (action.action == 'setTo24FPS') {
+			self.setProcessorProperty(self.apiKeyShutterSyncMode, 'none')
+			self.setProcessorProperty(self.apiKeyOffsetFractionMode, 'none')
+			self.setProcessorProperty(self.apiKeyFrameRateMultiplier, '1')
 		}
 
 		if (action.action == 'testPatternTypeSelect') {

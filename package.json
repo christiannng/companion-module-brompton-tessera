@@ -18,7 +18,7 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"author": "Rahil Baber <rahilb@carallon.com>",
+	"author": "Rahil Baber <rahilb@carallon.com> - Christian Nguyen <christiannguyen.wk@gmail.com> Addons functionalities",
 	"contributors": [],
 	"license": "MIT",
 	"homepage": "https://github.com/bitfocus/companion-module-brompton-tessera#readme",
