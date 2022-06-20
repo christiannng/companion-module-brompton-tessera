@@ -459,9 +459,13 @@ instance.prototype.initActions = function (system) {
 			label: 'Set to Normal 24 FPS',
 			options: [],
 		},
-		presetNext: {
-			label: 'Set Shutter Angle 180',
-			options: []
+		IncreasePhase: {
+			label: 'Increate Fraction Offset',
+			options: [],
+		},
+		DecreasePhase: {
+			label: 'Decrease Fraction Offset',
+			options: [],
 		},
 		presetNext: {
 			label: 'Preset Next',
@@ -977,6 +981,34 @@ instance.prototype.action = async function (action) {
 				let bOffsetFractionMode = getProperty(self.state, self.apiKeyOffsetFractionMode)
 				if(bOffsetFractionMode === 'fraction') {
 					self.setProcessorProperty(self.apiKeyOffsetFraction, action.options.fractionOffset)
+				}
+			}
+		}
+		
+		if (action.action == 'IncreasePhase') {
+			self.setProcessorProperty(self.apiKeyOffsetFractionMode, 'fraction')
+
+			await delay(200);
+			let bOffsetFractionMode = getProperty(self.state, self.apiKeyOffsetFractionMode)
+			if(bOffsetFractionMode === 'fraction') {
+				let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
+
+				if(offsetFraction >= 0 && offsetFraction <= 100) {
+					self.setProcessorProperty(self.apiKeyOffsetFraction, offsetFraction + 10 > 100 ? 100 : offsetFraction)
+				}
+			}
+		}
+
+		if (action.action == 'DecreasePhase') {
+			self.setProcessorProperty(self.apiKeyOffsetFractionMode, 'fraction')
+
+			await delay(200);
+			let bOffsetFractionMode = getProperty(self.state, self.apiKeyOffsetFractionMode)
+			if(bOffsetFractionMode === 'fraction') {
+				let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
+
+				if(offsetFraction >= 0 && offsetFraction <= 100) {
+					self.setProcessorProperty(self.apiKeyOffsetFraction, offsetFraction - 10 < 0 ? 0 : offsetFraction)
 				}
 			}
 		}
