@@ -204,7 +204,7 @@ instance.prototype.initVariables = function () {
 	self.variableInfo = [
 		{
 			definition: { label: 'Set Shutter to 180', name: 'SetShutterTo180' },
-			apiKey: self.apiKeyActivePresetNumber,
+			apiKey: self.apiKeyShutterSyncMode,
 		},
 		{
 			definition: { label: 'Active Preset Number', name: 'activePresetNumber' },
@@ -424,6 +424,10 @@ instance.prototype.initActions = function (system) {
 					range: false,
 				},
 			],
+		},
+		presetNext: {
+			label: 'Set Shutter Angle 180',
+			options: []
 		},
 		presetNext: {
 			label: 'Preset Next',
