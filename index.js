@@ -460,6 +460,10 @@ instance.prototype.initActions = function (system) {
 			options: [],
 		},
 		presetNext: {
+			label: 'Set Shutter Angle 180',
+			options: []
+		},
+		presetNext: {
 			label: 'Preset Next',
 			options: [],
 		},
