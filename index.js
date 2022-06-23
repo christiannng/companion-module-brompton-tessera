@@ -687,6 +687,18 @@ instance.prototype.initActions = function (system) {
 			label: 'Test Pattern Type Select',
 			options: [
 				{
+					type: 'number',
+					label: 'Brightness Percentage',
+					id: 'brightnessPercentage',
+					tooltip: 'The brightness of the pattern',
+					min: 0,
+					max: 100,
+					default: 100,
+					step: .1,
+					required: true,
+					range: false,
+				},
+				{
 					type: 'dropdown',
 					label: 'Type',
 					id: 'type',
@@ -1020,7 +1032,10 @@ instance.prototype.action = async function (action) {
 		}
 
 		if (action.action == 'testPatternTypeSelect') {
+			validate(action.options.brightnessPercentage, minBrightness, maxBrightness, 'Brightness Percentage')
 			self.setProcessorProperty(self.apiKeyTestPatternType, action.options.type)
+			self.setProcessorProperty(self.apiKeyOutputBrightness, action.options.brightnessPercentage * self.config.maxBrightness / 100.0)
+
 		}
 
 		if (action.action == 'inputPortNumberSelect') {
