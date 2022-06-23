@@ -1006,7 +1006,7 @@ instance.prototype.action = async function (action) {
 				let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
 
 				if(offsetFraction >= 0 && offsetFraction <= 100) {
-					self.setProcessorProperty(self.apiKeyOffsetFraction, offsetFraction + 10 > 100 ? 100 : offsetFraction)
+					self.setProcessorProperty(self.apiKeyOffsetFraction, offsetFraction + 5 > 100 ? 100 : offsetFraction + 5)
 				}
 			}
 		}
@@ -1020,7 +1020,7 @@ instance.prototype.action = async function (action) {
 				let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
 
 				if(offsetFraction >= 0 && offsetFraction <= 100) {
-					self.setProcessorProperty(self.apiKeyOffsetFraction, offsetFraction - 10 < 0 ? 0 : offsetFraction)
+					self.setProcessorProperty(self.apiKeyOffsetFraction, offsetFraction - 5 < 0 ? 0 : offsetFraction - 5)
 				}
 			}
 		}
