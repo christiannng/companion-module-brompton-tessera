@@ -1006,7 +1006,12 @@ instance.prototype.action = async function (action) {
 				let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
 
 				if(offsetFraction >= 0 && offsetFraction <= 100) {
-					self.setProcessorProperty(self.apiKeyOffsetFraction, offsetFraction + 5 > 100 ? 100 : offsetFraction + 5)
+					const potentialNewOffset = Number(offsetFraction) + 5;
+					if(potentialNewOffset >= 0 && potentialNewOffset <= 100) {
+						self.setProcessorProperty(self.apiKeyOffsetFraction,  potentialNewOffset)
+					} else {
+						self.setProcessorProperty(self.apiKeyOffsetFraction,  0)
+					}
 				}
 			}
 		}
@@ -1018,9 +1023,14 @@ instance.prototype.action = async function (action) {
 			let bOffsetFractionMode = getProperty(self.state, self.apiKeyOffsetFractionMode)
 			if(bOffsetFractionMode === 'fraction') {
 				let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
-
+				self.log('error', "Christian" + offsetFraction)
 				if(offsetFraction >= 0 && offsetFraction <= 100) {
-					self.setProcessorProperty(self.apiKeyOffsetFraction, offsetFraction - 5 < 0 ? 0 : offsetFraction - 5)
+					const potentialNewOffset = Number(offsetFraction) - 5;
+					if(potentialNewOffset >= 0 && potentialNewOffset <= 100) {
+						self.setProcessorProperty(self.apiKeyOffsetFraction,  potentialNewOffset)
+					} else {
+						self.setProcessorProperty(self.apiKeyOffsetFraction,  0)
+					}
 				}
 			}
 		}
