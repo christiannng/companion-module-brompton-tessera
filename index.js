@@ -426,8 +426,8 @@ instance.prototype.initActions = function (system) {
 				},
 			],
 		},
-		setTo48FPS: {
-			label: 'Set to 48 FPS',
+		setSyncPreset: {
+			label: 'Set Sync Preset',
 			options: [
 				{
 					type: 'number',
@@ -450,6 +450,18 @@ instance.prototype.initActions = function (system) {
 					max: 100,
 					default: 62,
 					step: .1,
+					required: true,
+					range: false,
+				},
+				{
+					type: 'number',
+					label: 'Framerate Multiplier',
+					id: 'frameRateMultiplier',
+					tooltip: 'Selected Framerate Multiplier',
+					min: 1,
+					max: 5,
+					default: 1,
+					step: 1,
 					required: true,
 					range: false,
 				},
@@ -974,10 +986,11 @@ instance.prototype.action = async function (action) {
 			self.setProcessorProperty(self.apiKeyOutputBrightness, action.options.brightnessPercentage * self.config.maxBrightness / 100.0)
 		}
 
-		if (action.action == 'setTo48FPS') {
+		if (action.action == 'setSyncPreset') {
 			validate(action.options.shutterAngle, 45, 360, 'Shutter Angle')
 			validate(action.options.fractionOffset, 0, 100, 'Fraction Offset')
-
+			validate(action.options.frameRateMultiplier, 1, 5, 'Framerate Multiplier')
+			
 			self.setProcessorProperty(self.apiKeyShutterSyncMode, 'angle')
 
 			await delay(200);
@@ -985,7 +998,7 @@ instance.prototype.action = async function (action) {
 			if (bShutterModeAngle === "angle") {
 				self.setProcessorProperty(self.apiKeybPrioritizeRefresh, '1')
 				self.setProcessorProperty(self.apiKeyShutterAngle, action.options.shutterAngle)
-				self.setProcessorProperty(self.apiKeyFrameRateMultiplier, '2')
+				self.setProcessorProperty(self.apiKeyFrameRateMultiplier, action.options.frameRateMultiplier)
 
 				self.setProcessorProperty(self.apiKeyOffsetFractionMode, 'fraction')
 
