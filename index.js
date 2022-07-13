@@ -201,8 +201,13 @@ instance.prototype.initVariables = function () {
 	self.apiKeyFrameRateMultiplier = ['api', 'output', 'network', 'frame-rate-multiplier']
 	self.apiKeyOffsetFraction = ['api', 'output', 'network', 'genlock', 'phase-offset', 'fraction']
 	self.apiKeyOffsetFractionMode = ['api', 'output', 'network', 'genlock', 'phase-offset', 'mode']
+	self.apiKeyHDMIHDRFormat = ['api', 'input', 'ports', 'hdmi', '0', 'controls', 'hdr', 'format'] //api/input/ports/hdmi/0/controls/hdr/format
 
 	self.variableInfo = [
+		{
+			definition: { label: 'Set HDMI HDR Format', name: 'SetHDMIHDRFormat' },
+			apiKey: self.apiKeyHDMIHDRFormat,
+		},
 		{
 			definition: { label: 'Set Shutter to 180', name: 'SetShutterTo180' },
 			apiKey: self.apiKeyShutterSyncMode,
@@ -409,6 +414,23 @@ instance.prototype.initActions = function (system) {
 	const brightnessStepRange = rangeToString(minBrightnessStep, maxBrightnessStep)
 
 	self.setActions({
+		testHDMIHDRFormatSelect: {
+			label: 'Set HDMI HDR Format',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Format',
+					id: 'format',
+					default: 'perceptual-quantiser',
+					tooltip: 'HDMI format',
+					choices: [
+						{ id: 'standard-dynamic-range', label: 'Standard Dynamic Range' },
+						{ id: 'perceptual-quantiser', label: 'Perceptual Quantiser' },
+						{ id: 'hybrid-log-gamma', label: 'Hybrid Log Gamma' },
+					],
+				},
+			],
+		},
 		presetSelect: {
 			label: 'Preset Select',
 			options: [
@@ -978,6 +1000,11 @@ instance.prototype.action = async function (action) {
 
 		if (action.action == 'testPatternDisable') {
 			self.setProcessorProperty(self.apiKeyTestPattern, false)
+		}
+
+		//testHDMIHDRFormatSelect
+		if (action.action == 'testHDMIHDRFormatSelect') {
+			self.setProcessorProperty(self.apiKeyHDMIHDRFormat, action.options.format)
 		}
 
 		if (action.action == 'testPatternFormatSelect') {
