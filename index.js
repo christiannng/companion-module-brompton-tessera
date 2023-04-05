@@ -17,6 +17,8 @@ const defaultBrightnessStep = 100
 const minGroupNumber = 1
 const maxGroupNumber = Math.pow(2, 32) - 1
 
+let initialPhaseOffset = 0
+
 function instance(system, id, config) {
 	let self = this
 
@@ -486,7 +488,7 @@ instance.prototype.initActions = function (system) {
 					step: 1,
 					required: true,
 					range: false,
-				},
+				}
 			],
 		},
 		setTo24FPS: {
@@ -495,11 +497,37 @@ instance.prototype.initActions = function (system) {
 		},
 		IncreasePhase: {
 			label: 'Increate Fraction Offset',
-			options: [],
+			options: [
+				{
+					type: 'number',
+					label: 'Phase Offset Increase',
+					id: 'phaseOffsetIncrease',
+					tooltip: 'Selected a Phase Offset Increase',
+					min: 1,
+					max: 5,
+					default: 1,
+					step: 1,
+					required: true,
+					range: false,
+				},
+			],
 		},
 		DecreasePhase: {
 			label: 'Decrease Fraction Offset',
-			options: [],
+			options: [
+				{
+					type: 'number',
+					label: 'Phase Offset Increase',
+					id: 'phaseOffsetIncrease',
+					tooltip: 'Selected a Phase Offset Increase',
+					min: 1,
+					max: 5,
+					default: 1,
+					step: 1,
+					required: true,
+					range: false,
+				},
+			],
 		},
 		presetNext: {
 			label: 'Preset Next',
@@ -1039,18 +1067,21 @@ instance.prototype.action = async function (action) {
 		
 		if (action.action == 'IncreasePhase') {
 			self.setProcessorProperty(self.apiKeyOffsetFractionMode, 'fraction')
+			validate(action.options.phaseOffsetIncrease, -100, 100, 'Phase Offset Increase')
 
 			await delay(200);
 			let bOffsetFractionMode = getProperty(self.state, self.apiKeyOffsetFractionMode)
 			if(bOffsetFractionMode === 'fraction') {
-				let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
-
-				if(offsetFraction >= -100 && offsetFraction <= 100) {
-					const potentialNewOffset = Number(offsetFraction) + 5;
+				// let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
+				
+				if(initialPhaseOffset >= -100 && initialPhaseOffset <= 100) {
+					const potentialNewOffset = Number(initialPhaseOffset) + Number(action.options.phaseOffsetIncrease);
 					if(potentialNewOffset >= 0 && potentialNewOffset <= 100) {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  potentialNewOffset)
+						initialPhaseOffset = potentialNewOffset
 					} else {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  0)
+						initialPhaseOffset = 0
 					}
 				}
 			}
@@ -1058,18 +1089,21 @@ instance.prototype.action = async function (action) {
 
 		if (action.action == 'DecreasePhase') {
 			self.setProcessorProperty(self.apiKeyOffsetFractionMode, 'fraction')
+			validate(action.options.phaseOffsetIncrease, -100, 100, 'Phase Offset Increase')
 
 			await delay(200);
 			let bOffsetFractionMode = getProperty(self.state, self.apiKeyOffsetFractionMode)
 			if(bOffsetFractionMode === 'fraction') {
-				let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
+				// let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
 				self.log('error', "Christian" + offsetFraction)
-				if(offsetFraction >= 0 && offsetFraction <= 100) {
-					const potentialNewOffset = Number(offsetFraction) - 5;
+				if(initialPhaseOffset >= 0 && initialPhaseOffset <= 100) {
+					const potentialNewOffset = Number(initialPhaseOffset) - Number(action.options.phaseOffsetIncrease);
 					if(potentialNewOffset >= -100 && potentialNewOffset <= 100) {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  potentialNewOffset)
+						initialPhaseOffset = potentialNewOffset
 					} else {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  0)
+						initialPhaseOffset = 0
 					}
 				}
 			}
