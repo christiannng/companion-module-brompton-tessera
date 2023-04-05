@@ -17,7 +17,7 @@ const defaultBrightnessStep = 100
 const minGroupNumber = 1
 const maxGroupNumber = Math.pow(2, 32) - 1
 
-let initialPhaseOffset = 0
+// let initialPhaseOffset = 0
 
 function instance(system, id, config) {
 	let self = this
@@ -32,6 +32,8 @@ function instance(system, id, config) {
 	self.initActions()
 	return self
 }
+
+instance.prototype.initialPhaseOffset = 0
 
 instance.prototype.updateConfig = function (config) {
 	let self = this
@@ -1074,14 +1076,14 @@ instance.prototype.action = async function (action) {
 			if(bOffsetFractionMode === 'fraction') {
 				// let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
 				
-				if(initialPhaseOffset >= -100 && initialPhaseOffset <= 100) {
-					const potentialNewOffset = Number(initialPhaseOffset) + Number(action.options.phaseOffsetIncrease);
+				if(self.initialPhaseOffset >= -100 && self.initialPhaseOffset <= 100) {
+					const potentialNewOffset = Number(self.initialPhaseOffset) + Number(action.options.phaseOffsetIncrease);
 					if(potentialNewOffset >= 0 && potentialNewOffset <= 100) {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  potentialNewOffset)
-						initialPhaseOffset = potentialNewOffset
+						self.initialPhaseOffset = potentialNewOffset
 					} else {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  0)
-						initialPhaseOffset = 0
+						self.initialPhaseOffset = 0
 					}
 				}
 			}
@@ -1096,14 +1098,14 @@ instance.prototype.action = async function (action) {
 			if(bOffsetFractionMode === 'fraction') {
 				// let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
 				// self.log('error', "Christian" + offsetFraction)
-				if(initialPhaseOffset >= 0 && initialPhaseOffset <= 100) {
-					const potentialNewOffset = Number(initialPhaseOffset) + Number(action.options.phaseOffsetIncrease);
+				if(self.initialPhaseOffset >= 0 && self.initialPhaseOffset <= 100) {
+					const potentialNewOffset = Number(self.initialPhaseOffset) + Number(action.options.phaseOffsetIncrease);
 					if(potentialNewOffset >= -100 && potentialNewOffset <= 100) {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  potentialNewOffset)
-						initialPhaseOffset = potentialNewOffset
+						self.initialPhaseOffset = potentialNewOffset
 					} else {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  0)
-						initialPhaseOffset = 0
+						self.initialPhaseOffset = 0
 					}
 				}
 			}
