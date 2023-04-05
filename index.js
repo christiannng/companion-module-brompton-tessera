@@ -1095,9 +1095,9 @@ instance.prototype.action = async function (action) {
 			let bOffsetFractionMode = getProperty(self.state, self.apiKeyOffsetFractionMode)
 			if(bOffsetFractionMode === 'fraction') {
 				// let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
-				self.log('error', "Christian" + offsetFraction)
+				// self.log('error', "Christian" + offsetFraction)
 				if(initialPhaseOffset >= 0 && initialPhaseOffset <= 100) {
-					const potentialNewOffset = Number(initialPhaseOffset) + Number(action.options.phaseOffsetIncrease);
+					const potentialNewOffset = Number(initialPhaseOffset) - Number(action.options.phaseOffsetIncrease);
 					if(potentialNewOffset >= -100 && potentialNewOffset <= 100) {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  potentialNewOffset)
 						initialPhaseOffset = potentialNewOffset
