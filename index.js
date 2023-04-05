@@ -503,8 +503,8 @@ instance.prototype.initActions = function (system) {
 					label: 'Phase Offset Increase',
 					id: 'phaseOffsetIncrease',
 					tooltip: 'Selected a Phase Offset Increase',
-					min: 1,
-					max: 5,
+					min: -100,
+					max: 100,
 					default: 1,
 					step: 1,
 					required: true,
@@ -520,8 +520,8 @@ instance.prototype.initActions = function (system) {
 					label: 'Phase Offset Increase',
 					id: 'phaseOffsetIncrease',
 					tooltip: 'Selected a Phase Offset Increase',
-					min: 1,
-					max: 5,
+					min: -100,
+					max: 100,
 					default: 1,
 					step: 1,
 					required: true,
@@ -1097,7 +1097,7 @@ instance.prototype.action = async function (action) {
 				// let offsetFraction = getProperty(self.state, self.apiKeyOffsetFraction)
 				// self.log('error', "Christian" + offsetFraction)
 				if(initialPhaseOffset >= 0 && initialPhaseOffset <= 100) {
-					const potentialNewOffset = Number(initialPhaseOffset) - Number(action.options.phaseOffsetIncrease);
+					const potentialNewOffset = Number(initialPhaseOffset) + Number(action.options.phaseOffsetIncrease);
 					if(potentialNewOffset >= -100 && potentialNewOffset <= 100) {
 						self.setProcessorProperty(self.apiKeyOffsetFraction,  potentialNewOffset)
 						initialPhaseOffset = potentialNewOffset
